@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: 安全问题（请勿公开提交）
-    url: https://github.com/2yywhzfgj8-jpg/wandering-pet/security/advisories/new
+    url: https://github.com/XavierWangPro070403/wandering-pet/security/advisories/new
     about: 漏洞、密钥泄露等请走私密报告，见 SECURITY.md
   - name: 使用与部署问题
-    url: https://github.com/2yywhzfgj8-jpg/wandering-pet/blob/main/README.md
+    url: https://github.com/XavierWangPro070403/wandering-pet/blob/main/README.md
     about: 先看 README 的「快速开始」与「常见问题」，仍未解决再提 Issue

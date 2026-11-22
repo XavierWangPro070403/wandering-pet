@@ -2,7 +2,7 @@
 
 > 连接「流浪动物救助机构」与「潜在领养人」的公益平台：宠物建档 → 领养申请 → 面谈/家访 → 签约 → 回访全流程线上可查，另含资讯科普、捐赠公示、志愿者、流浪动物线索上报、宠物用品商城与 AI 宠物顾问。
 
-[![CI](https://github.com/2yywhzfgj8-jpg/wandering-pet/actions/workflows/ci.yml/badge.svg)](https://github.com/2yywhzfgj8-jpg/wandering-pet/actions/workflows/ci.yml)
+[![CI](https://github.com/XavierWangPro070403/wandering-pet/actions/workflows/ci.yml/badge.svg)](https://github.com/XavierWangPro070403/wandering-pet/actions/workflows/ci.yml)
 ![Java](https://img.shields.io/badge/Java-17-007396?logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.5-6DB33F?logo=springboot&logoColor=white)
 ![Vue](https://img.shields.io/badge/Vue-2.6-4FC08D?logo=vuedotjs&logoColor=white)
