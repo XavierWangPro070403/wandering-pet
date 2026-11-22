@@ -1,0 +1,30 @@
+# 统一换行符，避免 Windows / macOS 协作时整文件变更
+* text=auto eol=lf
+
+# 二进制文件不做行尾转换
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.webp binary
+*.jar  binary
+
+# 脚本按平台保留换行
+*.sh  text eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# 明确文本类型（便于 GitHub 语言统计与 diff）
+*.java   text
+*.vue    text
+*.js     text
+*.json   text
+*.xml    text
+*.yml    text
+*.yaml   text
+*.scss   text
+*.css    text
+*.sql    text
+*.md     text
+package-lock.json text
