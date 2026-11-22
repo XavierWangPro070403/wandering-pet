@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    name: 后端构建（Spring Boot）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Build backend
+        working-directory: wandering-pet-server
+        run: mvn -B -DskipTests package
+
+  web:
+    name: Web 构建（Vue 2 + Element UI）
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: npm
+          cache-dependency-path: wandering-pet-web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: wandering-pet-web
+        run: npm ci --no-audit --no-fund
+
+      - name: Build web
+        working-directory: wandering-pet-web
+        run: npm run build

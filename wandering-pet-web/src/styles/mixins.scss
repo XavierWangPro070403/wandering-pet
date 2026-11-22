@@ -1,0 +1,87 @@
+// mixins.scss —— 版式与组件通用 mixin（无独立 CSS 输出）
+
+// 全站唯一容器：width: min(100% - 48px, 1200px)
+// min() 含混合单位，需 unquote 原样输出，避免 dart-sass 参与求值
+@mixin wrap {
+  width: unquote("min(100% - 48px, #{$wrap-max})");
+  margin-inline: auto;
+}
+
+// 唯一卡片形态：16px 圆角 + 1px 边 + shadow-1；可点卡片悬停上浮 2px
+@mixin card {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: $radius-card;
+  box-shadow: $shadow-1;
+}
+
+@mixin card-hover {
+  transition: transform $duration-hover-in $ease-out-quart, box-shadow $duration-hover-in $ease-out-quart;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-2;
+  }
+}
+
+// 可点卡片内图片放大（overflow:hidden 框内 1.02-1.03）
+@mixin img-zoom {
+  overflow: hidden;
+
+  img {
+    transition: transform $duration-image $ease-out-quart;
+  }
+
+  &:hover img {
+    transform: scale(1.03);
+  }
+}
+
+// 门户章节：section > .wrap，h2 顶对齐
+@mixin portal-section($min-h: auto, $bg: $bg-card) {
+  background: $bg;
+  min-height: $min-h;
+  display: flex;
+  align-items: flex-start;
+
+  > .wrap {
+    padding: 120px 0;
+
+    @media (max-width: 767px) {
+      padding: 72px 0;
+    }
+  }
+}
+
+// 状态标签（颜色 + 文字成对）
+@mixin status-tag($color, $bg) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: $radius-small;
+  font-size: 12px;
+  line-height: 1;
+  color: $color;
+  background: $bg;
+
+  &::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: $radius-circle;
+    background: currentColor;
+  }
+}
+
+// 焦点环：2px 主色 + 2px 偏移（不得 outline:none）
+@mixin focus-ring {
+  outline: 2px solid $color-primary;
+  outline-offset: 2px;
+}
+
+// 数字统一 tabular
+@mixin tabular-nums {
+  font-variant-numeric: tabular-nums;
+}

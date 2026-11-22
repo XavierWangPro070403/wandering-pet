@@ -1,0 +1,55 @@
+{
+    "name" : "wandering-pet-miniapp",
+    "appid" : "",
+    "description" : "流浪宠物领养系统 - 小程序端（领养人）",
+    "versionName" : "1.0.0",
+    "versionCode" : "100",
+    "transformPx" : false,
+    "app-plus" : {
+        "usingComponents" : true,
+        "nvueStyleCompiler" : "uni-app",
+        "compilerVersion" : 3,
+        "splashscreen" : {
+            "alwaysShowBeforeRender" : true,
+            "waiting" : true,
+            "autoclose" : true,
+            "delay" : 0
+        },
+        "modules" : {},
+        "distribute" : {
+            "android" : {
+                "permissions" : [
+                    "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>"
+                ]
+            },
+            "ios" : {},
+            "sdkConfigs" : {}
+        }
+    },
+    "quickapp" : {},
+    "mp-weixin" : {
+        "appid" : "",
+        "setting" : {
+            "urlCheck" : false,
+            "es6" : true,
+            "enhance" : true,
+            "postcss" : true,
+            "minified" : true
+        },
+        "usingComponents" : true,
+        "permission" : {
+            "scope.userLocation" : {
+                "desc" : "用于流浪动物上报时定位所在位置"
+            }
+        },
+        "requiredPrivateInfos" : [ "chooseLocation" ]
+    },
+    "h5" : {
+        "title" : "流浪宠物领养",
+        "router" : {
+            "mode" : "hash"
+        }
+    },
+    "vueVersion" : "2"
+}
+

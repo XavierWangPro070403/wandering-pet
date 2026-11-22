@@ -1,0 +1,40 @@
+/* uni-app 全局 SCSS 变量（与 Web 端 tokens.scss 同源，按 1px=2rpx 换算） */
+
+/* 品牌与中性色 */
+$wp-primary: #FF7A45;
+$wp-primary-hover: #FF9466;
+$wp-primary-active: #F2672B;
+$wp-primary-light: #FFF1EB;
+$wp-primary-text: #B23A0E;
+
+$wp-secondary: #2BAE9B;
+$wp-secondary-light: #E6F7F4;
+$wp-secondary-text: #0F6F63;
+
+$wp-warning: #FFB020;
+$wp-warning-light: #FFF7E6;
+$wp-warning-text: #8A5A00;
+
+$wp-danger: #F5455C;
+$wp-danger-light: #FFECEF;
+$wp-danger-text: #B3122B;
+
+$wp-text-primary: #1F2733;
+$wp-text-regular: #4E5969;
+$wp-text-secondary: #667080;
+$wp-text-disabled: #A9B0BC;
+$wp-border: #E5E6EB;
+$wp-bg-page: #F7F8FA;
+$wp-bg-card: #FFFFFF;
+$wp-mask: rgba(31, 39, 51, 0.45);
+
+/* 字号（rpx）：28/24/32/36 对应 14/12/16/18px */
+$wp-font-body: 28rpx;
+$wp-font-small: 24rpx;
+$wp-font-title: 32rpx;
+$wp-font-large: 36rpx;
+
+/* 圆角 */
+$wp-radius-small: 8rpx;
+$wp-radius-base: 16rpx;
+$wp-radius-card: 24rpx;

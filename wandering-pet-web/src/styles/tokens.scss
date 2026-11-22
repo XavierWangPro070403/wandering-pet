@@ -1,0 +1,103 @@
+// ==========================================================================
+// 设计 token 唯一来源（提示词 §8.2-§8.4）。组件内不得写死色值/字号，一律引用本文件。
+// ==========================================================================
+
+// ---------- 色彩：品牌与中性色 ----------
+$color-primary: #FF7A45;            // 主色（填充）：主按钮底、进度、选中条
+$color-primary-hover: #FF9466;      // 悬停底色
+$color-primary-active: #F2672B;     // 按下底色
+$color-primary-light: #FFF1EB;      // 浅底：标签底、选中行背景
+$color-primary-text: #B23A0E;       // 浅底上的主色文字、链接
+
+$color-secondary: #2BAE9B;          // 辅助色（健康/成功/已领养）
+$color-secondary-light: #E6F7F4;
+$color-secondary-text: #0F6F63;
+
+$color-warning: #FFB020;            // 警示（待处理/待回访）
+$color-warning-light: #FFF7E6;
+$color-warning-text: #8A5A00;
+
+$color-danger: #F5455C;             // 危险（驳回/删除/退养）
+$color-danger-light: #FFECEF;
+$color-danger-text: #B3122B;
+
+$color-info: #3D7EFF;               // 链接、提示
+
+$text-primary: #1F2733;             // 标题文字、主按钮文字
+$text-regular: #4E5969;             // 正文
+$text-secondary: #667080;           // 辅助文字（时间、单位）
+$text-disabled: #A9B0BC;            // 仅 placeholder / disabled
+$border-color: #E5E6EB;             // 分割线、卡片描边
+$bg-page: #F7F8FA;                  // 页面背景
+$bg-card: #FFFFFF;                  // 卡片、弹窗
+$mask: rgba(31, 39, 51, 0.45);      // 弹窗遮罩
+$bg-table-hover: #FFF9F6;           // 表格行悬停
+$bg-dark-nav: #1F2733;              // 工作台侧栏（唯一深色底例外）
+
+// ---------- 字体 ----------
+$font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+$font-family-display: "Noto Serif SC", "Songti SC", serif;  // 仅门户大标题
+$font-family-number: "DIN Alternate", "Helvetica Neue", Arial, sans-serif;
+
+// ---------- 门户字阶（桌面 / 移动） ----------
+$font-hero: 72px;         $lh-hero: 80px;       // 首屏主张（唯一超大标题）
+$font-hero-lead: 20px;    $lh-hero-lead: 34px;  // 首屏副文案
+$font-display: 56px;      $lh-display: 64px;
+$font-h1: 48px;           $lh-h1: 58px;
+$font-h2: 32px;           $lh-h2: 42px;
+$font-h3: 22px;           $lh-h3: 32px;
+$font-lead: 18px;         $lh-lead: 32px;
+$font-body: 16px;         $lh-body: 28px;
+$font-small: 14px;        $lh-small: 22px;
+$font-label: 13px;        $lh-label: 20px;
+
+// ---------- 工作台字阶 ----------
+$font-w-display: 38px;    $lh-w-display: 46px;
+$font-w-h1: 30px;         $lh-w-h1: 40px;
+$font-w-h2: 24px;         $lh-w-h2: 32px;
+$font-w-h3: 20px;         $lh-w-h3: 28px;
+$font-w-h4: 18px;         $lh-w-h4: 26px;
+$font-w-body-l: 16px;     $lh-w-body-l: 24px;
+$font-w-body: 14px;       $lh-w-body: 22px;
+$font-w-caption: 12px;    $lh-w-caption: 20px;
+
+// ---------- 间距（4px 体系） ----------
+$space-1: 4px;
+$space-2: 8px;
+$space-3: 12px;
+$space-4: 16px;
+$space-5: 20px;
+$space-6: 24px;
+$space-8: 32px;
+$space-10: 40px;
+$space-12: 48px;
+
+// ---------- 圆角体系（全站仅此 4 档 + 50%） ----------
+$radius-small: 4px;    // 标签
+$radius-base: 8px;     // 按钮、输入框
+$radius-card: 16px;    // 卡片、弹窗
+$radius-circle: 50%;
+
+// ---------- 阴影 ----------
+$shadow-1: 0 1px 2px rgba(31, 39, 51, 0.06), 0 4px 12px rgba(31, 39, 51, 0.06);
+$shadow-2: 0 6px 24px rgba(31, 39, 51, 0.10);   // 悬浮（模糊 24、≤10% 墨色）
+$shadow-focus-ring: 0 0 0 3px rgba(255, 122, 69, 0.12);
+
+// ---------- 动效 ----------
+$ease-out-quart: cubic-bezier(.2, .8, .2, 1);
+$duration-hover-in: 150ms;
+$duration-hover-out: 120ms;
+$duration-press: 90ms;
+$duration-panel: 200ms;
+$duration-image: 600ms;
+$duration-image-out: 400ms;
+
+// ---------- 布局 ----------
+$wrap-max: 1200px;      // 全站唯一容器
+$portal-header-h: 64px;
+$admin-sidebar-w: 220px;
+$admin-topbar-h: 60px;
+
+// ---------- 装饰图形：爪印（小动物元素，全站唯一） ----------
+// 作为 mask 使用：background-color 决定颜色，尺寸由 width/height 控制
+$paw-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cellipse cx='12' cy='15.6' rx='4.6' ry='3.9'/%3E%3Cellipse cx='6.4' cy='9.8' rx='1.9' ry='2.4'/%3E%3Cellipse cx='10.9' cy='7.4' rx='1.8' ry='2.4'/%3E%3Cellipse cx='15.6' cy='7.6' rx='1.8' ry='2.4'/%3E%3Cellipse cx='19.4' cy='10.2' rx='1.9' ry='2.4'/%3E%3C/svg%3E");

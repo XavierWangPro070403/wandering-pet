@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanderingpet.module.statistics.mapper.StatisticsMapper">
+
+    <!-- 近 6 个月领养完成趋势（递归 CTE 补零） -->
+    <select id="selectAdoptionTrend" resultType="com.wanderingpet.module.statistics.vo.StatPointVO">
+        WITH RECURSIVE months AS (
+            SELECT DATE_FORMAT(CURDATE(), '%Y-%m') AS m, 1 AS n
+            UNION ALL
+            SELECT DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL n MONTH), '%Y-%m'), n + 1
+            FROM months WHERE n &lt; #{months}
+        )
+        SELECT months.m AS name, IFNULL(t.c, 0) AS value
+        FROM months
+        LEFT JOIN (
+            SELECT DATE_FORMAT(sign_date, '%Y-%m') AS ym, COUNT(*) AS c
+            FROM adoption_record
+            WHERE deleted = 0 AND status = 'ADOPTED'
+            GROUP BY ym
+        ) t ON t.ym = months.m
+        ORDER BY n DESC
+    </select>
+
+    <!-- 物种在册占比（不含已下架） -->
+    <select id="selectCategoryDistribution" resultType="com.wanderingpet.module.statistics.vo.StatPointVO">
+        SELECT pc.name AS name, COUNT(*) AS value
+        FROM pet p
+        INNER JOIN pet_category pc ON pc.id = p.category_id AND pc.deleted = 0
+        WHERE p.deleted = 0 AND p.status != 'OFFLINE'
+        GROUP BY pc.name
+        ORDER BY value DESC
+    </select>
+
+    <!-- 待领养宠物城市分布 -->
+    <select id="selectCityDistribution" resultType="com.wanderingpet.module.statistics.vo.StatPointVO">
+        SELECT s.city AS name, COUNT(*) AS value
+        FROM pet p
+        INNER JOIN shelter s ON s.id = p.shelter_id AND s.deleted = 0
+        WHERE p.deleted = 0 AND p.status = 'AVAILABLE'
+        GROUP BY s.city
+        ORDER BY value DESC
+        LIMIT #{topN}
+    </select>
+
+    <!-- 领养转化漏斗 -->
+    <select id="selectFunnel" resultType="com.wanderingpet.module.statistics.vo.StatPointVO">
+        SELECT '已提交' AS name, COUNT(*) AS value FROM adoption_application WHERE deleted = 0
+        UNION ALL
+        SELECT '进入审核', COUNT(*) FROM adoption_application
+            WHERE deleted = 0 AND status IN ('REVIEWING','INTERVIEW','HOME_VISIT','APPROVED','SIGNED','ADOPTED')
+        UNION ALL
+        SELECT '审核通过', COUNT(*) FROM adoption_application
+            WHERE deleted = 0 AND status IN ('APPROVED','SIGNED','ADOPTED')
+        UNION ALL
+        SELECT '领养完成', COUNT(*) FROM adoption_application
+            WHERE deleted = 0 AND status = 'ADOPTED'
+    </select>
+</mapper>

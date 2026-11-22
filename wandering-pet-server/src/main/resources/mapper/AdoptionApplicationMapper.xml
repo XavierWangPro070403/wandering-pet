@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanderingpet.module.adoption.mapper.AdoptionApplicationMapper">
+
+    <sql id="listColumns">
+        a.id, a.apply_no, a.pet_id, p.name AS pet_name, p.cover_image AS pet_cover,
+        a.user_id, u.nickname AS user_nickname,
+        a.shelter_id, s.name AS shelter_name,
+        a.applicant_name, a.applicant_phone, a.city, a.status,
+        DATE_FORMAT(a.interview_time, '%Y-%m-%d %H:%i:%s') AS interview_time,
+        DATE_FORMAT(a.home_visit_time, '%Y-%m-%d %H:%i:%s') AS home_visit_time,
+        a.audit_remark,
+        DATE_FORMAT(a.create_time, '%Y-%m-%d %H:%i:%s') AS create_time
+    </sql>
+
+    <!-- 机构端 / 管理端申请分页 -->
+    <select id="selectPageWithNames" resultType="com.wanderingpet.module.adoption.vo.ApplicationListVO">
+        SELECT <include refid="listColumns"/>
+        FROM adoption_application a
+        LEFT JOIN pet p ON p.id = a.pet_id AND p.deleted = 0
+        LEFT JOIN `user` u ON u.id = a.user_id AND u.deleted = 0
+        LEFT JOIN shelter s ON s.id = a.shelter_id AND s.deleted = 0
+        <where>
+            a.deleted = 0
+            <if test="q.shelterId != null">AND a.shelter_id = #{q.shelterId}</if>
+            <if test="q.status != null and q.status != ''">AND a.status = #{q.status}</if>
+            <if test="q.petId != null">AND a.pet_id = #{q.petId}</if>
+            <if test="q.keyword != null and q.keyword != ''">
+                AND (a.apply_no LIKE CONCAT('%', #{q.keyword}, '%')
+                     OR p.name LIKE CONCAT('%', #{q.keyword}, '%')
+                     OR a.applicant_name LIKE CONCAT('%', #{q.keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY a.create_time DESC, a.id DESC
+    </select>
+
+    <!-- 申请人分页 -->
+    <select id="selectMyPage" resultType="com.wanderingpet.module.adoption.vo.ApplicationListVO">
+        SELECT <include refid="listColumns"/>
+        FROM adoption_application a
+        LEFT JOIN pet p ON p.id = a.pet_id AND p.deleted = 0
+        LEFT JOIN `user` u ON u.id = a.user_id AND u.deleted = 0
+        LEFT JOIN shelter s ON s.id = a.shelter_id AND s.deleted = 0
+        <where>
+            a.deleted = 0
+            AND a.user_id = #{q.userId}
+            <if test="q.status != null and q.status != ''">AND a.status = #{q.status}</if>
+            <if test="q.petId != null">AND a.pet_id = #{q.petId}</if>
+        </where>
+        ORDER BY a.create_time DESC, a.id DESC
+    </select>
+</mapper>

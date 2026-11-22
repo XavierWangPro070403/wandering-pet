@@ -1,0 +1,12 @@
+package com.wanderingpet.module.notification.mapper;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.wanderingpet.module.notification.entity.Notification;
+import org.apache.ibatis.annotations.Mapper;
+
+/**
+ * 站内消息 Mapper
+ */
+@Mapper
+public interface NotificationMapper extends BaseMapper<Notification> {
+}

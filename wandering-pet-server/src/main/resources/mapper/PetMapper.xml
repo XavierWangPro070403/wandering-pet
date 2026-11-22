@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanderingpet.module.pet.mapper.PetMapper">
+
+    <!-- 门户/小程序宠物列表 -->
+    <select id="selectPortalPage" resultType="com.wanderingpet.module.pet.vo.PetListVO">
+        SELECT p.id, p.pet_no, p.name, p.category_id, pc.name AS category_name,
+               p.breed_id, pb.name AS breed_name, p.gender, p.age_month, p.weight, p.size,
+               p.color, p.sterilized, p.vaccinated, p.dewormed, p.health_status,
+               p.character_desc, p.cover_image, p.shelter_id, s.name AS shelter_name, s.city,
+               p.status, p.view_count, p.favorite_count,
+               DATE_FORMAT(p.publish_time, '%Y-%m-%d %H:%i:%s') AS publish_time,
+               0 AS favorited
+        FROM pet p
+        LEFT JOIN pet_category pc ON pc.id = p.category_id AND pc.deleted = 0
+        LEFT JOIN pet_breed pb ON pb.id = p.breed_id AND pb.deleted = 0
+        INNER JOIN shelter s ON s.id = p.shelter_id AND s.deleted = 0
+        <where>
+            p.deleted = 0
+            AND p.status = #{q.status}
+            <if test="q.categoryId != null">AND p.category_id = #{q.categoryId}</if>
+            <if test="q.breedId != null">AND p.breed_id = #{q.breedId}</if>
+            <if test="q.gender != null and q.gender != ''">AND p.gender = #{q.gender}</if>
+            <if test="q.size != null and q.size != ''">AND p.size = #{q.size}</if>
+            <if test="q.ageMin != null">AND p.age_month &gt;= #{q.ageMin}</if>
+            <if test="q.ageMax != null">AND p.age_month &lt;= #{q.ageMax}</if>
+            <if test="q.city != null and q.city != ''">AND s.city = #{q.city}</if>
+            <if test="q.shelterId != null">AND p.shelter_id = #{q.shelterId}</if>
+            <if test="q.keyword != null and q.keyword != ''">
+                AND (MATCH(p.name, p.character_desc) AGAINST(#{q.keyword} IN NATURAL LANGUAGE MODE)
+                     OR p.name LIKE CONCAT('%', #{q.keyword}, '%'))
+            </if>
+        </where>
+        <choose>
+            <when test="q.orderBy == 'view_count'">ORDER BY p.view_count</when>
+            <when test="q.orderBy == 'favorite_count'">ORDER BY p.favorite_count</when>
+            <when test="q.orderBy == 'age_month'">ORDER BY p.age_month</when>
+            <otherwise>ORDER BY p.publish_time</otherwise>
+        </choose>
+        <choose>
+            <when test="q.orderDirection == 'asc'">ASC</when>
+            <otherwise>DESC</otherwise>
+        </choose>
+        , p.id DESC
+    </select>
+
+    <!-- 机构端本机构宠物列表（全状态，含进行中申请数） -->
+    <select id="selectShelterPage" resultType="com.wanderingpet.module.pet.vo.PetManageListVO">
+        SELECT p.id, p.pet_no, p.name, p.category_id, pc.name AS category_name, pb.name AS breed_name,
+               p.gender, p.age_month, p.cover_image, p.status, p.view_count, p.favorite_count,
+               (SELECT COUNT(*) FROM adoption_application a
+                 WHERE a.pet_id = p.id AND a.deleted = 0
+                   AND a.status IN ('SUBMITTED','REVIEWING','INTERVIEW','HOME_VISIT','APPROVED','SIGNED')) AS active_application_count,
+               DATE_FORMAT(p.update_time, '%Y-%m-%d %H:%i:%s') AS update_time
+        FROM pet p
+        LEFT JOIN pet_category pc ON pc.id = p.category_id AND pc.deleted = 0
+        LEFT JOIN pet_breed pb ON pb.id = p.breed_id AND pb.deleted = 0
+        <where>
+            p.deleted = 0
+            AND p.shelter_id = #{shelterId}
+            <if test="q.status != null and q.status != ''">AND p.status = #{q.status}</if>
+            <if test="q.categoryId != null">AND p.category_id = #{q.categoryId}</if>
+            <if test="q.keyword != null and q.keyword != ''">
+                AND (p.name LIKE CONCAT('%', #{q.keyword}, '%') OR p.pet_no LIKE CONCAT('%', #{q.keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY p.update_time DESC, p.id DESC
+    </select>
+
+    <!-- 管理端宠物全量列表 -->
+    <select id="selectAdminPage" resultType="com.wanderingpet.module.pet.vo.AdminPetVO">
+        SELECT p.id, p.pet_no, p.name, pc.name AS category_name, pb.name AS breed_name,
+               p.gender, p.age_month, p.cover_image, p.status,
+               p.shelter_id, s.name AS shelter_name, s.city,
+               p.view_count, p.favorite_count,
+               DATE_FORMAT(p.publish_time, '%Y-%m-%d %H:%i:%s') AS publish_time,
+               DATE_FORMAT(p.create_time, '%Y-%m-%d %H:%i:%s') AS create_time
+        FROM pet p
+        LEFT JOIN pet_category pc ON pc.id = p.category_id AND pc.deleted = 0
+        LEFT JOIN pet_breed pb ON pb.id = p.breed_id AND pb.deleted = 0
+        LEFT JOIN shelter s ON s.id = p.shelter_id AND s.deleted = 0
+        <where>
+            p.deleted = 0
+            <if test="q.status != null and q.status != ''">AND p.status = #{q.status}</if>
+            <if test="q.categoryId != null">AND p.category_id = #{q.categoryId}</if>
+            <if test="q.city != null and q.city != ''">AND s.city = #{q.city}</if>
+            <if test="q.shelterId != null">AND p.shelter_id = #{q.shelterId}</if>
+            <if test="q.keyword != null and q.keyword != ''">
+                AND (p.name LIKE CONCAT('%', #{q.keyword}, '%') OR p.pet_no LIKE CONCAT('%', #{q.keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY p.create_time DESC, p.id DESC
+    </select>
+</mapper>

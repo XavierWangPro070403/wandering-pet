@@ -1,0 +1,199 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+
+spring:
+  application:
+    name: wandering-pet-server
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB       # 视频 50MB 为上限，图片在业务层另行校验 5MB
+      max-request-size: 60MB
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+    default-property-inclusion: non_null
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+# MyBatis-Plus
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    banner: false
+    db-config:
+      id-type: auto
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# 业务配置（wandering-pet 自定义）
+wandering:
+  jwt:
+    # HS256 密钥（≥ 64 字符）；生产环境请使用环境变量覆盖
+    # 环境变量 WANDERING_JWT_SECRET 覆盖；下面的默认值仅用于本地演示，部署前必须替换
+    secret: ${WANDERING_JWT_SECRET:WanderingPetJwtSecret-2026-local-demo-only-CHANGE-ME-0123456789ABCDEF}
+    expire-minutes: 120       # Token 有效期 2 小时，与 Redis 登录态 TTL 一致
+    header: Authorization
+    prefix: "Bearer "
+  auth:
+    # 免登录路径（Ant 风格）。这些路径仍会尝试解析 Token（可选登录场景）
+    ignore-urls:
+      - /api/v1/auth/**
+      - /api/v1/pet-categories
+      - /api/v1/pet-breeds
+      - /api/v1/dicts
+      - /api/v1/pets/**
+      - /api/v1/pet-health-records/**
+      - /api/v1/articles/**
+      - /api/v1/comments
+      - /api/v1/shelters/**
+      - /api/v1/donation-projects/**
+      - /api/v1/volunteer-stations/**
+      - /api/v1/statistics/portal-summary
+      - /api/v1/file/preview/**
+      - /api/v1/shop/products/**
+      - /v3/api-docs/**
+      - /doc.html
+      - /swagger-ui/**
+      - /webjars/**
+      - /favicon.ico
+      - /imgs/**
+      - /error
+  aes:
+    # 敏感字段加密密钥（16 字节，AES-128-CBC；生产环境请更换并托管）
+    # 环境变量 WANDERING_AES_KEY 覆盖；16 字节，更换后旧数据将无法解密
+    key: ${WANDERING_AES_KEY:wanderingPet2026}
+  minio:
+    endpoint: http://localhost:9000
+    access-key: ${MINIO_ACCESS_KEY:minioadmin}
+    secret-key: ${MINIO_SECRET_KEY:minioadmin}
+    bucket: wandering-pet
+    private-bucket: wandering-pet-private
+    presign-expire-minutes: 30
+  wx:
+    # 微信小程序 appid/secret；为空时进入开发模式（任意 code 均可登录，便于本地联调）
+    appid: ""
+    secret: ""
+    # Web 端微信扫码登录（微信开放平台-网站应用）；open-appid 为空时扫码登录进入演示模式
+    # 申请地址：https://open.weixin.qq.com → 网站应用 → 授权回调域
+    open-appid: ""
+    open-secret: ""
+    # 授权回调地址前缀（公网可达），如 https://pet.example.com
+    open-redirect-base: ""
+  deepseek:
+    # DeepSeek AI（AI 宠物顾问）；api-key 为空时进入演示模式（本地预置回复）
+    # 申请地址：https://platform.deepseek.com → API Keys
+    api-key: "${DEEPSEEK_API_KEY:}"
+    base-url: "https://api.deepseek.com"
+    model: "deepseek-chat"
+  sms:
+    # 阿里云号码认证服务-短信认证（个人免企业资质，无需自行申请签名）
+    # 开通步骤：号码认证服务控制台（dypns.console.aliyun.com）→ 短信认证 → 开通并开启功能
+    # 签名与模板均为系统赠送（如签名「速通互联验证码」），在控制台「短信认证」页查看：
+    #   - 签名名称：填入 sign-name
+    #   - 模板编号：填入 template-code（赠送模板变量固定为 ${code} 与 ${min}）
+    # 未配置 access-key-id / access-key-secret / sign-name / template-code 时进入开发模式：
+    # 验证码写入 Redis 并在接口响应中回传，不会真实下发短信，便于本地联调。
+    # 生产环境请用环境变量覆盖（RAM 子账号，仅授号码认证服务 dypnsapi 权限）：
+    #   ALIYUN_SMS_ACCESS_KEY_ID / ALIYUN_SMS_ACCESS_KEY_SECRET
+    #   ALIYUN_SMS_SIGN_NAME / ALIYUN_SMS_TEMPLATE_CODE
+    access-key-id: ${ALIYUN_SMS_ACCESS_KEY_ID:}
+    access-key-secret: ${ALIYUN_SMS_ACCESS_KEY_SECRET:}
+    sign-name: 速通互联验证码        # 控制台系统赠送的固定签名，无需申请
+    template-code: 100001            # 控制台系统赠送的验证码模板编号
+    # 模板变量名：赠送模板内容形如「您的验证码为 ${code}，${min} 分钟内有效」
+    template-param-key: code
+    template-min-key: min
+    region-id: cn-hangzhou
+    endpoint: dypnsapi.aliyuncs.com
+    code-expire-seconds: 300     # 验证码有效期 5 分钟
+    resend-seconds: 60           # 同一手机号重发间隔
+    daily-limit: 10              # 同一手机号每日上限
+    max-verify-attempts: 5       # 单个验证码允许校验失败次数
+  cors:
+    # 跨域白名单：开发阶段放开为 *（代码走 allowedOriginPatterns，与 allowCredentials 兼容）；
+    # 生产环境请收紧为具体前端域名，例如 - https://pet.example.com
+    allowed-origins:
+      - "*"
+
+logging:
+  level:
+    root: info
+    com.wanderingpet: info
+
+---
+# ================= 开发环境 =================
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/wandering_pet?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:123456}
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 20
+      connection-timeout: 10000
+      pool-name: WanderingPetHikari
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      timeout: 5000
+      lettuce:
+        pool:
+          max-active: 16
+          max-idle: 8
+          min-idle: 2
+    mongodb:
+      uri: mongodb://localhost:27017/wandering_pet
+
+logging:
+  level:
+    com.wanderingpet.mapper: debug
+
+---
+# ================= 生产环境（占位示例，部署时通过环境变量覆盖） =================
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DB:wandering_pet}?useUnicode=true&characterEncoding=utf8mb4&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:123456}
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+    mongodb:
+      uri: mongodb://${MONGO_HOST:localhost}:${MONGO_PORT:27017}/${MONGO_DB:wandering_pet}
+
+logging:
+  file:
+    name: ${user.dir}/logs/wandering-pet-server.log
+   # 「模板管理」里的模板 CODE，必须以 SMS_ 开头

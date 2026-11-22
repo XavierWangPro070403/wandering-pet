@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanderingpet.module.rescue.mapper.RescueReportMapper">
+
+    <!-- 管理端线索分页 -->
+    <select id="selectAdminPage" resultType="com.wanderingpet.module.rescue.vo.AdminRescueVO">
+        SELECT r.id, r.report_no, r.user_id, u.nickname AS user_nickname,
+               r.category_id, pc.name AS category_name,
+               r.description, r.province, r.city, r.district, r.address,
+               r.urgency, r.status, r.handler_id, su.real_name AS handler_name,
+               r.handle_remark,
+               DATE_FORMAT(r.handle_time, '%Y-%m-%d %H:%i:%s') AS handle_time,
+               DATE_FORMAT(r.create_time, '%Y-%m-%d %H:%i:%s') AS create_time
+        FROM rescue_report r
+        LEFT JOIN `user` u ON u.id = r.user_id AND u.deleted = 0
+        LEFT JOIN pet_category pc ON pc.id = r.category_id AND pc.deleted = 0
+        LEFT JOIN sys_user su ON su.id = r.handler_id AND su.deleted = 0
+        <where>
+            r.deleted = 0
+            <if test="q.status != null and q.status != ''">AND r.status = #{q.status}</if>
+            <if test="q.urgency != null">AND r.urgency = #{q.urgency}</if>
+            <if test="q.city != null and q.city != ''">AND r.city = #{q.city}</if>
+            <if test="q.keyword != null and q.keyword != ''">
+                AND (r.report_no LIKE CONCAT('%', #{q.keyword}, '%')
+                     OR r.description LIKE CONCAT('%', #{q.keyword}, '%')
+                     OR r.address LIKE CONCAT('%', #{q.keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY r.create_time DESC, r.id DESC
+    </select>
+</mapper>

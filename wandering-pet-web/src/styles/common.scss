@@ -1,0 +1,593 @@
+// common.scss —— 全局样式 + Element 组件覆盖（§8.6/§8.13：一套按钮/卡片/圆角/链接）
+@import "./tokens.scss";
+
+// ---------- Reset / Base ----------
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: $font-family;
+  font-size: 14px;
+  line-height: 22px;
+  color: $text-regular;
+  background: $bg-page;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  color: $text-primary;
+  font-weight: 600;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+// 图片全局兜底：宽度不超过容器、保持原始比例，防止任意来源的图片撑破展示框。
+// 仅元素级选择器，各组件内的 object-fit: cover 等类级规则优先于此。
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: $color-primary-text;
+  text-decoration: none;
+}
+
+// 焦点环全站兜底
+a:focus-visible,
+button:focus-visible,
+.el-button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid $color-primary;
+  outline-offset: 2px;
+}
+
+// 跳到主要内容（可访问性）
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 3000;
+  background: $bg-card;
+  color: $color-primary-text;
+  padding: 8px 16px;
+  border-radius: 0 0 $radius-base 0;
+
+  &:focus {
+    left: 0;
+  }
+}
+
+// 数字统一 tabular
+.num,
+.el-table .cell .num,
+.stat-value {
+  font-variant-numeric: tabular-nums;
+}
+
+// 全站唯一容器（§8.4）：header/main/footer 共用同一 .wrap
+.wrap {
+  width: unquote("min(100% - 48px, 1200px)");
+  margin-inline: auto;
+}
+
+// 链接下划线从左向右绘制（唯一链接样式）
+.link-underline {
+  position: relative;
+  color: $color-primary-text;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform $duration-hover-in $ease-out-quart;
+  }
+
+  &:hover::after {
+    transform: scaleX(1);
+  }
+}
+
+// ==========================================================================
+// Element 组件覆盖（唯一形态，不得页面内另造）
+// ==========================================================================
+
+// ---------- 按钮：40 高 / 8px 圆角 / 主色底深墨字（禁止白字压橙底） ----------
+.el-button {
+  height: 40px;
+  padding: 0 20px;
+  border-radius: $radius-base;
+  font-weight: 500;
+  font-size: 14px;
+  transition: transform $duration-hover-in $ease-out-quart,
+              background-color $duration-hover-in $ease-out-quart,
+              border-color $duration-hover-in $ease-out-quart,
+              color $duration-hover-in $ease-out-quart;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(-1px) scale(0.985);
+  }
+
+  &.el-button--large {
+    height: 48px;
+    padding: 0 28px;
+    font-size: 16px;
+  }
+
+  &.el-button--small {
+    height: 32px;
+    padding: 0 12px;
+    font-size: 13px;
+  }
+}
+
+.el-button--primary {
+  background: $color-primary;
+  border-color: $color-primary;
+  color: $text-primary;
+
+  &:hover,
+  &:focus {
+    background: $color-primary-hover;
+    border-color: $color-primary-hover;
+    color: $text-primary;
+  }
+
+  &:active {
+    background: $color-primary-active;
+    border-color: $color-primary-active;
+    color: $text-primary;
+  }
+
+  &.is-disabled,
+  &.is-disabled:hover {
+    background: #F2F3F5;
+    border-color: #F2F3F5;
+    color: $text-disabled;
+    transform: none;
+  }
+}
+
+// 次按钮：白底 + 主色文字 + 1px 主色描边；悬停浅主色底
+.el-button--default {
+  background: $bg-card;
+  border-color: $color-primary;
+  color: $color-primary-text;
+
+  &:hover,
+  &:focus {
+    background: $color-primary-light;
+    border-color: $color-primary;
+    color: $color-primary-text;
+  }
+}
+
+// 文字按钮
+.el-button--text {
+  color: $color-primary-text;
+
+  &:hover {
+    color: $color-primary-text;
+    background: $color-primary-light;
+    text-decoration: underline;
+  }
+}
+
+// 危险按钮
+.el-button--danger {
+  background: $color-danger;
+  border-color: $color-danger;
+  color: #fff;
+
+  &:hover,
+  &:focus {
+    background: #f76b7e;
+    border-color: #f76b7e;
+    color: #fff;
+  }
+}
+
+// ---------- 表格「操作」列：单行排列 + 爪印（小动物元素） ----------
+// 用法：操作列模板里用 <div class="row-actions"> 包住所有行内按钮
+.row-actions {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 2px;
+  white-space: nowrap;
+
+  .el-button--text {
+    display: inline-flex;
+    align-items: center;
+    height: 26px;
+    padding: 0 6px;
+    margin: 0;
+    font-size: 13px;
+    white-space: nowrap;
+
+    // 每个行内操作前的小爪印，颜色跟随文字（hover 时变实）
+    &::before {
+      content: "";
+      flex: 0 0 auto;
+      width: 12px;
+      height: 12px;
+      margin-right: 4px;
+      background-color: currentColor;
+      opacity: 0.45;
+      transition: opacity $duration-hover-in $ease-out-quart;
+      -webkit-mask: $paw-svg center / 12px 12px no-repeat;
+      mask: $paw-svg center / 12px 12px no-repeat;
+    }
+
+    &:hover::before {
+      opacity: 1;
+    }
+  }
+}
+
+// 操作列表头也带一枚爪印（与行内按钮呼应）
+.el-table th.op-col .cell {
+  display: inline-flex;
+  align-items: center;
+
+  &::before {
+    content: "";
+    flex: 0 0 auto;
+    width: 12px;
+    height: 12px;
+    margin-right: 6px;
+    background-color: $color-primary;
+    opacity: 0.55;
+    -webkit-mask: $paw-svg center / 12px 12px no-repeat;
+    mask: $paw-svg center / 12px 12px no-repeat;
+  }
+}
+
+// 操作列单元格本身也不换行（fixed 右列）
+.el-table .row-actions {
+  white-space: nowrap;
+}
+
+// ---------- 卡片：16px 圆角 + 1px 边 + shadow-1 ----------
+.el-card {
+  border-radius: $radius-card;
+  border: 1px solid $border-color;
+  box-shadow: $shadow-1;
+  overflow: hidden;
+
+  .el-card__header {
+    padding: 20px 24px;
+    border-bottom: 1px solid $border-color;
+    color: $text-primary;
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  .el-card__body {
+    padding: 24px;
+  }
+}
+
+// ---------- 表格：行高 52 / 表头浅灰 / 无竖线 / 悬停 #FFF9F6 ----------
+.el-table {
+  color: $text-regular;
+  font-size: 14px;
+
+  th.el-table__cell {
+    background: $bg-page;
+    color: $text-primary;
+    font-weight: 500;
+    height: 44px;
+    border-bottom: 1px solid $border-color;
+  }
+
+  td.el-table__cell {
+    height: 52px;
+    border-bottom: 1px solid $border-color;
+  }
+
+  // 无竖线
+  .el-table__cell {
+    border-right: none;
+  }
+
+  .el-table__body tr:hover > td.el-table__cell {
+    background: $bg-table-hover;
+  }
+
+  .num {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// ---------- 弹窗：圆角 16 / 头部 20 内边距 ----------
+.el-dialog {
+  border-radius: $radius-card;
+  overflow: hidden;
+
+  .el-dialog__header {
+    padding: 20px 24px;
+    border-bottom: 1px solid $border-color;
+
+    .el-dialog__title {
+      font-size: 18px;
+      font-weight: 600;
+      color: $text-primary;
+    }
+  }
+
+  .el-dialog__body {
+    padding: 24px;
+  }
+
+  .el-dialog__footer {
+    padding: 16px 24px 20px;
+    border-top: 1px solid $border-color;
+    text-align: right;
+  }
+}
+
+.v-modal {
+  background: #1F2733;
+  opacity: 0.45;
+}
+
+// ---------- 标签：无描边浅底深字 ----------
+.el-tag {
+  border: none;
+  border-radius: $radius-small;
+  height: 24px;
+  line-height: 22px;
+  padding: 0 8px;
+  font-size: 12px;
+
+  &.el-tag--info {
+    background: #F2F3F5;
+    color: #5A6472;
+  }
+}
+
+// ---------- 日期区间选择：修「至」被固定 5% 宽度裁掉 ----------
+.el-range-editor.el-input__inner {
+  width: 100%;
+}
+
+.el-date-editor .el-range-separator {
+  flex: 0 0 auto;
+  width: auto;
+  height: 100%;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.el-date-editor .el-range-input {
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+}
+
+// ---------- 输入：聚焦主色边 + 3px ring ----------
+.el-input__inner,
+.el-textarea__inner {
+  border-radius: $radius-base;
+  border-color: $border-color;
+
+  &:focus {
+    border-color: $color-primary;
+    box-shadow: $shadow-focus-ring;
+  }
+}
+
+.el-form-item__label {
+  color: $text-regular;
+  font-weight: 500;
+}
+
+// 字数统计用中性灰，避免蓝色小字抢视线
+.el-input__count,
+.el-textarea .el-input__count {
+  color: $text-secondary;
+}
+
+.el-form-item {
+  margin-bottom: 20px;
+}
+
+// ---------- 分页：右对齐由页面控制；当前页主色实心 ----------
+.el-pagination {
+  .el-pager li.active {
+    color: $text-primary;
+    background: $color-primary;
+  }
+
+  .el-pager li:hover {
+    color: $color-primary-text;
+  }
+}
+
+// ---------- 步骤条 ----------
+.el-step__title.is-process {
+  color: $text-primary;
+  font-weight: 600;
+}
+
+.el-step__head.is-finish .el-step__line,
+.el-step__head.is-process .el-step__line {
+  background-color: $border-color;
+}
+
+// ---------- 消息 / 通知 ----------
+.el-message {
+  border-radius: $radius-base;
+  border: 1px solid $border-color;
+  box-shadow: $shadow-2;
+}
+
+// ---------- 骨架屏 ----------
+.el-skeleton__item {
+  background: linear-gradient(90deg, #F2F3F5 25%, #EDEFF2 37%, #F2F3F5 63%);
+  background-size: 400% 100%;
+  animation: el-skeleton-loading 1.4s ease infinite;
+  border-radius: $radius-base;
+}
+
+// ---------- 日期选择/下拉 ----------
+.el-picker-panel,
+.el-dropdown-menu,
+.el-select-dropdown {
+  border-radius: $radius-base;
+}
+
+// ---------- 空状态（空/加载/错误三态统一由组件处理） ----------
+.wb-empty {
+  text-align: center;
+  padding: 48px 0;
+  color: $text-secondary;
+
+  .wb-empty__title {
+    font-size: 14px;
+    color: $text-regular;
+    margin-bottom: 4px;
+  }
+
+  .wb-empty__desc {
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+}
+
+// 尊重系统减弱动效
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+// ==========================================================================
+// 小动物装饰元素（全站统一）：淡爪印水印，纯装饰、不参与交互
+// ==========================================================================
+
+// 1) 页标题后：一枚小爪印（管理端 / 机构端 + 部分门户页面共 20 页）
+.page-head h1::after {
+  content: "";
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-left: 10px;
+  vertical-align: -2px;
+  background-color: $color-primary;
+  opacity: 0.4;
+  -webkit-mask: $paw-svg center / contain no-repeat;
+  mask: $paw-svg center / contain no-repeat;
+}
+
+// 2) 门户区块标题前：一枚小爪印
+.section-head h2::before {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  vertical-align: -2px;
+  background-color: $color-primary;
+  opacity: 0.55;
+  -webkit-mask: $paw-svg center / contain no-repeat;
+  mask: $paw-svg center / contain no-repeat;
+}
+
+// 3) 工作台侧栏：右下角一枚大爪印（深色底上用白色）
+.sidebar {
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    position: absolute;
+    right: -22px;
+    bottom: -26px;
+    width: 140px;
+    height: 140px;
+    background-color: #fff;
+    opacity: 0.06;
+    pointer-events: none;
+    -webkit-mask: $paw-svg center / contain no-repeat;
+    mask: $paw-svg center / contain no-repeat;
+  }
+}
+
+// 4) 门户页脚分组标题前：小爪印
+.footer-col__title::before {
+  content: "";
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+  vertical-align: -1px;
+  background-color: $color-primary;
+  opacity: 0.55;
+  -webkit-mask: $paw-svg center / contain no-repeat;
+  mask: $paw-svg center / contain no-repeat;
+}
+
+// 5) 没有 .page-head 的门户页面：同样跟在标题后面
+.adopt-apply .apply-head h1::after,
+.volunteer-page .intro-card__body h1::after,
+.article-detail .detail-head__title::after,
+.pet-detail .info-card__name::after,
+.me-page .me-user__name::after {
+  content: "";
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-left: 8px;
+  vertical-align: -1px;
+  background-color: $color-primary;
+  opacity: 0.4;
+  -webkit-mask: $paw-svg center / contain no-repeat;
+  mask: $paw-svg center / contain no-repeat;
+}
+
+// 6) 宠物列表的结果行：爪印 + 「共 N 只待领养」
+.list-toolbar__total::before {
+  content: "";
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  vertical-align: -2px;
+  background-color: $color-primary;
+  opacity: 0.5;
+  -webkit-mask: $paw-svg center / contain no-repeat;
+  mask: $paw-svg center / contain no-repeat;
+}

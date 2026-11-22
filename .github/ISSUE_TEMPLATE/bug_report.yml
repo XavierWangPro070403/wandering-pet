@@ -1,0 +1,77 @@
+name: Bug 报告
+description: 报告一个可以复现的问题
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈！请尽量把信息填完整，方便快速定位。
+        提交前请确认：**没有粘贴真实的手机号、身份证、密钥或数据库导出**。
+
+  - type: dropdown
+    id: module
+    attributes:
+      label: 涉及模块
+      options:
+        - 后端接口 / 鉴权
+        - Web 用户端
+        - Web 机构端
+        - Web 管理端
+        - 微信小程序
+        - 商城
+        - AI 顾问
+        - 数据库 / SQL 脚本
+        - 文档
+        - 其他
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 问题描述
+      description: 发生了什么？你期望的结果是什么？
+      placeholder: |
+        实际：点击「撤回」后消息仍在列表里。
+        期望：显示「你撤回了一条消息」。
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      placeholder: |
+        1. 登录 shelter1
+        2. 进入 在线咨询
+        3. 发送一条消息后点击「···」→ 撤回
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 报错日志 / 截图
+      description: 后端控制台堆栈、浏览器 Console 或 Network 截图
+      render: shell
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: 版本 / 提交
+      description: 例如 main@a1b2c3d，或页面右上角显示的版本
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 自查
+      options:
+        - label: 我已搜索过现有 Issue，确认不是重复问题
+          required: true
+        - label: 我已确认这不是本地环境配置问题（MySQL/Redis/MinIO 未启动等）
+          required: false

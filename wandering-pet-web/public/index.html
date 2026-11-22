@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>流浪宠物领养系统</title>
+    <style>
+      /* ========== 启动加载屏（JS 包加载期间展示，App 挂载后淡出） ========== */
+      #boot-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(180deg, #FFF6EF 0%, #FFFFFF 100%);
+        transition: opacity 0.3s ease;
+      }
+      #boot-loader.boot-hide {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .boot-zoo {
+        display: flex;
+        align-items: flex-end;
+        gap: 28px;
+      }
+      .boot-pet {
+        display: inline-flex;
+        animation: boot-bounce 0.9s ease-in-out infinite;
+      }
+      .boot-pet--2 { animation-delay: 0.15s; }
+      .boot-pet--3 { animation-delay: 0.3s; }
+      .boot-brand {
+        margin-top: 28px;
+        font-size: 22px;
+        font-weight: 700;
+        color: #1F2733;
+        letter-spacing: 2px;
+        font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+      }
+      .boot-tip {
+        margin-top: 10px;
+        font-size: 13px;
+        color: #A9B0BC;
+        font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+      }
+      .boot-dots { display: inline-block; }
+      .boot-dot {
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        margin-left: 4px;
+        border-radius: 50%;
+        background: #FF7A45;
+        animation: boot-dot 1.2s ease-in-out infinite;
+      }
+      .boot-dot--2 { animation-delay: 0.2s; }
+      .boot-dot--3 { animation-delay: 0.4s; }
+      @keyframes boot-bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-12px); }
+      }
+      @keyframes boot-dot {
+        0%, 100% { opacity: 0.25; transform: translateY(0); }
+        50% { opacity: 1; transform: translateY(-4px); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .boot-pet, .boot-dot { animation: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>请启用 JavaScript 以使用本平台。</noscript>
+    <div id="app"></div>
+    <!-- 启动加载屏：等待 Vue 挂载后由 App.vue 移除 -->
+    <div id="boot-loader" aria-hidden="true">
+      <div class="boot-zoo">
+        <span class="boot-pet boot-pet--1" title="狗狗">
+          <svg viewBox="0 0 64 64" width="56" height="56" aria-hidden="true">
+            <ellipse cx="13" cy="20" rx="8" ry="13" fill="#E8853D" transform="rotate(-18 13 20)"/>
+            <ellipse cx="51" cy="20" rx="8" ry="13" fill="#E8853D" transform="rotate(18 51 20)"/>
+            <circle cx="32" cy="36" r="21" fill="#FFB265"/>
+            <circle cx="24.5" cy="31" r="2.6" fill="#4A2E1D"/>
+            <circle cx="39.5" cy="31" r="2.6" fill="#4A2E1D"/>
+            <ellipse cx="19" cy="38" rx="3.6" ry="2.2" fill="#FF8A65" opacity="0.55"/>
+            <ellipse cx="45" cy="38" rx="3.6" ry="2.2" fill="#FF8A65" opacity="0.55"/>
+            <ellipse cx="32" cy="43" rx="9.5" ry="6.5" fill="#FFE8CF"/>
+            <circle cx="32" cy="40" r="3" fill="#4A2E1D"/>
+            <path d="M32 43 Q29 47 26 45 M32 43 Q35 47 38 45" stroke="#4A2E1D" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <ellipse cx="32" cy="50" rx="3.2" ry="3.6" fill="#FF8FA3"/>
+          </svg>
+        </span>
+        <span class="boot-pet boot-pet--2" title="猫咪">
+          <svg viewBox="0 0 64 64" width="56" height="56" aria-hidden="true">
+            <path d="M13 28 L15 11 L27 21 Z" fill="#F5B95F"/>
+            <path d="M51 28 L49 11 L37 21 Z" fill="#F5B95F"/>
+            <path d="M17 24 L18 16.5 L23.5 21 Z" fill="#FFDCA8"/>
+            <path d="M47 24 L46 16.5 L40.5 21 Z" fill="#FFDCA8"/>
+            <circle cx="32" cy="36" r="21" fill="#FFCF7E"/>
+            <circle cx="24.5" cy="32" r="2.6" fill="#4A2E1D"/>
+            <circle cx="39.5" cy="32" r="2.6" fill="#4A2E1D"/>
+            <ellipse cx="19" cy="38" rx="3.4" ry="2.2" fill="#FFA37A" opacity="0.5"/>
+            <ellipse cx="45" cy="38" rx="3.4" ry="2.2" fill="#FFA37A" opacity="0.5"/>
+            <path d="M29.8 39.6 L34.2 39.6 L32 42.4 Z" fill="#FF8FA3"/>
+            <path d="M32 42.4 Q29.5 45.6 26.8 43.8 M32 42.4 Q34.5 45.6 37.2 43.8" stroke="#4A2E1D" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M13 35 L21.5 36.5 M13.5 40 L21.5 39.2 M51 35 L42.5 36.5 M50.5 40 L42.5 39.2" stroke="#B97F3E" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="boot-pet boot-pet--3" title="兔子">
+          <svg viewBox="0 0 64 64" width="56" height="56" aria-hidden="true">
+            <ellipse cx="24" cy="14" rx="5.5" ry="13" fill="#FFFFFF" transform="rotate(-8 24 14)"/>
+            <ellipse cx="40" cy="14" rx="5.5" ry="13" fill="#FFFFFF" transform="rotate(8 40 14)"/>
+            <ellipse cx="24" cy="14" rx="2.6" ry="9" fill="#FFC9D4" transform="rotate(-8 24 14)"/>
+            <ellipse cx="40" cy="14" rx="2.6" ry="9" fill="#FFC9D4" transform="rotate(8 40 14)"/>
+            <circle cx="32" cy="38" r="19" fill="#FFFFFF"/>
+            <circle cx="32" cy="38" r="19" fill="none" stroke="#EDEFF2" stroke-width="1.4"/>
+            <circle cx="25.5" cy="34" r="2.4" fill="#4A2E1D"/>
+            <circle cx="38.5" cy="34" r="2.4" fill="#4A2E1D"/>
+            <ellipse cx="20.5" cy="40" rx="3.2" ry="2" fill="#FFC9D4"/>
+            <ellipse cx="43.5" cy="40" rx="3.2" ry="2" fill="#FFC9D4"/>
+            <path d="M30.4 39.6 L33.6 39.6 L32 41.8 Z" fill="#FF8FA3"/>
+            <path d="M32 41.8 Q29.6 44.8 27.2 43.2 M32 41.8 Q34.4 44.8 36.8 43.2" stroke="#4A2E1D" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+          </svg>
+        </span>
+      </div>
+      <div class="boot-brand">流浪宠物领养</div>
+      <div class="boot-tip">正在加载资源<span class="boot-dots"><span class="boot-dot"></span><span class="boot-dot boot-dot--2"></span><span class="boot-dot boot-dot--3"></span></span></div>
+    </div>
+    <script>
+      // 兜底：极端情况下（挂载失败/异常）15 秒后强制移除，避免卡在加载屏
+      (function () {
+        var removed = false;
+        window.__removeBootLoader = function () {
+          if (removed) return;
+          removed = true;
+          var el = document.getElementById('boot-loader');
+          if (!el) return;
+          el.classList.add('boot-hide');
+          setTimeout(function () { el.remove(); }, 350);
+        };
+        setTimeout(window.__removeBootLoader, 15000);
+      })();
+    </script>
+  </body>
+</html>

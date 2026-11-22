@@ -1,0 +1,25 @@
+// element-variables.scss —— token → Element 变量映射，主题只在此编译一次（§8.13）
+// 说明：dart-sass 编译 element-ui theme-chalk 源码，主色/文字/圆角全部来自 tokens.scss
+@import "./tokens.scss";
+
+// ---- Element 主题变量覆盖（不得出现默认蓝） ----
+$--color-primary: $color-primary;
+$--color-success: $color-secondary;
+$--color-warning: $color-warning;
+$--color-danger: $color-danger;
+$--color-info: $color-info;
+
+$--color-text-primary: $text-primary;
+$--color-text-regular: $text-regular;
+$--color-text-secondary: $text-secondary;
+$--color-text-placeholder: $text-disabled;
+
+$--border-color-light: $border-color;
+$--border-radius-base: $radius-base;
+
+$--font-size-base: 14px;
+$--button-padding-horizontal: 20px;
+
+$--font-path: "~element-ui/lib/theme-chalk/fonts";
+
+@import "~element-ui/packages/theme-chalk/src/index";
